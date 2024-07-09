@@ -16,9 +16,7 @@ async fn client_thread(config: Arc<Config>, mut socket: TcpStream) -> Result<(),
     let mut id = [0u8; 4];
     socket.read_exact(&mut id).await?;
 
-    let mut connection = if (id[0] == 0xef || id == *b"\xee\xee\xee\xee")
-        && (id != *b"HEAD" && id != *b"POST" && id != *b"GET " && id != *b"OPTI")
-    {
+    let mut connection = if id != *b"HEAD" && id != *b"POST" && id != *b"GET " && id != *b"OPTI" {
         TcpStream::connect(&config.mtproto).await?
     } else {
         TcpStream::connect(&config.https).await?
